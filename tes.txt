@@ -1,0 +1,102 @@
+Bismillah, 
+
+1. Membuat Aplikasi Dengan Express.js Pertama Kali
+    Pengantar Express.js Express.js adalah framework web untuk Node.js yang memungkinkan Anda untuk membangun aplikasi web dan API dengan cepat dan mudah. Dengan Express, Anda dapat mengatur rute, middleware, dan pengaturan lainnya dengan lebih efisien.
+
+    Langkah-langkah Membuat Aplikasi Pertama Kali:
+
+    1. Instal Node.js: Pastikan Anda sudah menginstal Node.js di sistem Anda. Anda dapat mengunduhnya dari nodejs.org.
+
+    2. Buat Folder Proyek:
+        mkdir my-express-app
+        cd my-express-app
+
+    3. Inisialisasi Proyek:
+        npm init -y
+
+    4. Instal Express:
+        npm install express
+
+    5. Buat File app.js:
+
+        const express = require('express');
+        const app = express();
+        const PORT = 3000;
+
+        app.get('/', (req, res) => {
+            res.send('Hello World!');
+        });
+
+        app.listen(PORT, () => {
+            console.log(`Server is running on http://localhost:${PORT}`);
+        });
+
+    6. Jalankan Aplikasi:
+        node app.js
+
+    7. Akses Aplikasi: Buka browser dan akses http://localhost:3000.
+
+2. Mengenal Object Request dan Response
+    Object Request (req) dan Response (res)
+    
+    - req (request) adalah objek yang berisi informasi tentang permintaan yang dilakukan oleh klien, seperti URL, metode HTTP, header, dan data yang dikirim.
+    - res (response) adalah objek yang digunakan untuk mengirimkan respons kembali ke klien. Anda dapat mengatur status, header, dan isi respons.
+    
+    Contoh Penggunaan:
+        app.get('/user', (req, res) => {
+            console.log(req.query); // Menampilkan query string
+            res.send('User  Data');
+        });
+
+3. Membuat Route Untuk Menentukan Response Tertentu
+    Membuat Route Anda dapat membuat berbagai route untuk menangani permintaan dari klien. Setiap route dapat mengembalikan respons yang berbeda.
+
+    Contoh:
+    app.get('/about', (req, res) => {
+        res.send('About Page');
+    });
+
+    app.get('/contact', (req, res) => {
+        res.send('Contact Page');
+    });
+
+4. Mempelajari Route Parameter Di Express.js
+    Route Parameter Route parameter memungkinkan Anda untuk menangkap nilai dari URL dan menggunakannya dalam aplikasi.
+   
+    Contoh:
+
+    app.get('/user/:id', (req, res) => {
+        const userId = req.params.id;
+        res.send(`User  ID: ${userId}`);
+    });
+
+5. Mendapatkan Nilai Dari Query String
+    Query String Query string adalah bagian dari URL yang berisi data yang dikirimkan oleh klien. Anda dapat mengaksesnya melalui req.query.
+
+    Contoh:
+        app.get('/search', (req, res) => {
+            const searchTerm = req.query.q;
+            res.send(`Searching for: ${searchTerm}`);
+        });
+
+6. Otomatis Restart Project Node.js Dengan Nodemon
+    Nodemon Nodemon adalah alat yang membantu Anda mengembangkan aplikasi Node.js dengan cara otomatis merestart server setiap kali ada perubahan pada file.
+
+    Instal Nodemon:
+        npm install --save-dev nodemon
+    
+    Tambahkan Script di package.json:
+        "scripts": {
+            "start": "node app.js",
+            "dev": "nodemon app.js"
+        }
+
+    Jalankan Aplikasi dengan Nodemon:
+        npm run dev
+
+    Dengan menggunakan nodemon, Anda tidak perlu menghentikan dan menjalankan kembali server setiap kali Anda melakukan perubahan pada kode.
+
+Kesimpulan
+Dengan mengikuti materi di atas, Anda sudah memiliki pemahaman dasar tentang bagaimana menggunakan Express.js untuk membuat aplikasi web. Anda telah belajar tentang objek request dan response, membuat route, menggunakan route parameter dan query string, serta menggunakan Nodemon untuk meningkatkan efisiensi pengembangan. Selamat mencoba!
+
+lanjutkan untuk lebih dalam lagi https://expressjs.com/en/5x/api.html#express

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <title>
+        <%= locals.title ? title : 'Default Title' %>
+    </title>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <%- include('partial/layouts/navbar') %> <!-- Pastikan ini sesuai dengan nama file -->
+
+        <div class="container mt-4">
+            <%- body %>
+        </div>
+
+
+        <%- include('partial/layouts/footer') %> <!-- Pastikan ini sesuai dengan nama file -->
+
+            <!-- JS -->
+            <script src="/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

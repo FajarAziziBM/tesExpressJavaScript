@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white">
+                <h1 class="card-title mb-0">
+                    <i class="bi bi-app me-2"></i>Welcome to My Express App!
+                </h1>
+            </div>
+            <div class="card-body">
+                <p class="card-text lead">
+                    This is a simple application built with Express and EJS.
+                </p>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="list-group">
+                            <% tags.forEach(tag=> { %>
+                                <a href="<%= tag.url %>" class="list-group-item list-group-item-action">
+                                    <%= tag.name %> Tags
+                                </a>
+                                <% }); %>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="list-group">
+                            <% const quickLinks=[ { name: 'Cat Listings' , url: '/cats' }, { name: 'About Us' ,
+                                url: '/about' }, { name: 'Contact' , url: '/contact' } ]; %>
+                                <% quickLinks.forEach(link=> { %>
+                                    <a href="<%= link.url %>" class="list-group-item list-group-item-action">
+                                        <%= link.name %>
+                                    </a>
+                                    <% }); %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

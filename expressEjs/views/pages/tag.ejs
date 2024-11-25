@@ -1,0 +1,35 @@
+<h1>Results for Tag: <%= tag %>
+</h1>
+
+<% if (foundItems && foundItems.length> 0) { %>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Value</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% foundItems.forEach(function(item) { %>
+                <tr>
+                    <td>
+                        <%= item.id %>
+                    </td>
+                    <td>
+                        <%= item.value %>
+                    </td>
+                    <td>
+                        <%= item.type %>
+                    </td>
+                </tr>
+                <% }); %>
+        </tbody>
+    </table>
+    <% } else { %>
+        <p>No items found.</p>
+        <% } %>
+
+            <p>
+                <%= message %>
+            </p>

@@ -1,0 +1,43 @@
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="/images/logo.png" alt="Logo" width="50" height="50"
+                    class="d-inline-block align-text-top me-2">
+                My Express App
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">
+                            <i class="bi bi-house me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown">
+                            <i class="bi bi-tags me-1"></i>Tags
+                        </a>
+                        <ul class="dropdown-menu">
+                            <% const tags=[ { name: 'Email' , url: '/tag/email' }, { name: 'Phone' , url: '/tag/phone'
+                                }, { name: 'Address' , url: '/tag/address' } ]; %>
+                                <% tags.forEach(tag=> { %>
+                                    <li>
+                                        <a class="dropdown-item" href="<%= tag.url %>">
+                                            <%= tag.name %>
+                                        </a>
+                                    </li>
+                                    <% }); %>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cats">
+                            <i class="bi bi-cat me-1"></i>Cats
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
