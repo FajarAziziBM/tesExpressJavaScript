@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BestPoint - Places </title>
+</head>
+
+<body>
+    <h1>All Places</h1>
+    <a href="/places/create">Add Place</a>
+
+    <ul>
+        <% places.forEach((place)=> { %>
+            <li>
+                <h2>
+                    <a href="/places/<%= place._id %>">
+                        <%= place.title %>
+                    </a>
+
+                </h2>
+                <p>
+                    <%= place.description %>
+                </p>
+                <p>Price: <%= place.price %>
+                </p>
+                <p>Location: <%= place.location %>
+                </p>
+            </li>
+            <% }); %>
+    </ul>
+
+</body>
+
+</html>
