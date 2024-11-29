@@ -6,6 +6,10 @@ const path = require("path");
 const { title } = require("process");
 const Place = require('./models/place');
 
+// Middleware untuk parsing body request
+app.use(express.urlencoded({ extended: true })); // Untuk parsing form data
+app.use(express.json()); // Untuk parsing JSON data
+
 // const dotenv = require("dotenv");
 // const authRoute = require("./routes/auth");
 // const userRoute = require("./routes/users");
@@ -41,6 +45,25 @@ app.get("/places", (req, res) => {
 app.get("/places/create", (req, res) => {
     res.render("places/create");
 })
+
+app.post("/places", async (req, res) => {
+    try {
+        // Extract values directly from req.body and ensure they are strings
+        const newPlace = new Place({
+            title: req.body.title.toString(),
+            price: req.body.price.toString(),
+            description: req.body.description.toString(),
+            location: req.body.location.toString()
+        });
+
+        await newPlace.save();
+        res.redirect("/places");
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Error creating place");
+    }
+});
+
 
 app.get("/places/:id", async (req, res) => {
     try {
