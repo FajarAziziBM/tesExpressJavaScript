@@ -110,6 +110,16 @@ app.put("/places/:id", async (req, res) => {
     }
 });
 
+app.delete("/places/:id", async (req, res) => {
+    try {
+        await Place.findByIdAndDelete(req.params.id);
+        res.redirect("/places");
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Error deleting place");
+    }
+});
+
 // app.get('/seed/places', async (req, res) => {
 //     const places = new Place({
 //         title: "Eiffel Tower",
