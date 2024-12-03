@@ -1,141 +1,49 @@
 const express = require("express");
-const { connect } = require("http2");
-const app = express();
 const mongoose = require("mongoose");
 const path = require("path");
-const { title } = require("process");
-const Place = require('./models/place');
 const methodOverride = require("method-override");
+const dotenv = require("dotenv");
+const ejsMate = require("ejs-mate");
+const placeRoutes = require("./routes/placeRoutes");
 
-// Middleware untuk parsing body request
-app.use(express.urlencoded({ extended: true })); // Untuk parsing form data
-app.use(express.json()); // Untuk parsing JSON data
-app.use(methodOverride("_method"));
+// Load environment variables
+dotenv.config();
 
-// const dotenv = require("dotenv");
-// const authRoute = require("./routes/auth");
-// const userRoute = require("./routes/users");
-// const postRoute = require("./routes/posts");
-// const categoryRoute = require("./routes/categories");
-// const multer = require("multer");
-// const cors = require("cors");
+const app = express();
 
-// connect to mongodb
-mongoose.connect("mongodb://localhost:27017/directorylistingapp")
-    .then(() => console.log("Connected to MongoDB"))
-    .catch((err) => console.log(err));
-
-
+// Middleware
+app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-app.get("/", (req, res) => {
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(methodOverride("_method"));
+app.use(express.static(path.join(__dirname, 'public')));
 
-    res.render("home");
-
-});
-
-app.get("/places", (req, res) => {
-    Place.find().then((places) => {
-        res.render("places/index", { places: places });
-    }).catch((err) => {
-        console.log(err);
-    });
-
-});
-
-app.get("/places/create", (req, res) => {
-    res.render("places/create");
+// MongoDB Connection
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 })
+.then(() => console.log("Connected to MongoDB"))
+.catch((err) => console.error("MongoDB connection error:", err));
 
-app.post("/places", async (req, res) => {
-    try {
-        // Extract values directly from req.body and ensure they are strings
-        const newPlace = new Place({
-            title: req.body.title.toString(),
-            price: req.body.price.toString(),
-            description: req.body.description.toString(),
-            location: req.body.location.toString()
-        });
-
-        await newPlace.save();
-        res.redirect("/places");
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Error creating place");
-    }
+// Routes
+app.get("/", (req, res) => {
+    res.render("home");
 });
 
-app.get("/places/:id", async (req, res) => {
-    try {
-        const place = await Place.findById(req.params.id); // Menggunakan findById untuk mendapatkan tempat berdasarkan ID
-        if (!place) {
-            return res.status(404).send("Place not found"); // Menangani jika tempat tidak ditemukan
-        }
-        res.render("places/show", { place: place });
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Error retrieving place"); // Menangani kesalahan saat mengambil tempat
-    }
+app.use("/places", placeRoutes);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).render('error', { error: err });
 });
 
-app.get("/places/:id/edit", async (req, res) => {
-    try {
-        const place = await Place.findById(req.params.id); // Menggunakan findById untuk mendapatkan tempat berdasarkan ID
-        if (!place) {
-            return res.status(404).send("Place not found"); // Menangani jika tempat tidak ditemukan
-        }
-        res.render("places/edit", { place: place });
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Error retrieving place"); // Menangani kesalahan saat mengambil tempat
-    }
-});
-
-app.put("/places/:id", async (req, res) => {
-    try {
-        const place = await Place.findById(req.params.id);
-        if (!place) {
-            return res.status(404).send("Place not found");
-        }
-        place.title = req.body.title;
-        place.price = req.body.price;
-        place.description = req.body.description;
-        place.location = req.body.location;
-        await place.save();
-        res.redirect(`/places/${place._id}`);
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Error updating place");
-    }
-});
-
-app.delete("/places/:id", async (req, res) => {
-    try {
-        await Place.findByIdAndDelete(req.params.id);
-        res.redirect("/places");
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Error deleting place");
-    }
-});
-
-// app.get('/seed/places', async (req, res) => {
-//     const places = new Place({
-//         title: "Eiffel Tower",
-//         price: "$50",
-//         description: "A beautiful tower",
-//         location: "Paris, France"
-//     });
-
-//     try {
-//         await places.save();
-//         res.send(places );
-//     } catch (error) {
-//         res.status(500).send("Error creating seed: " + error.message);
-//     }
-// });
-
-app.listen(8080, () => {
-    console.log("Server is running on port http://localhost:8080");
+// Start server
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
