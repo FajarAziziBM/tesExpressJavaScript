@@ -5,10 +5,12 @@ const mongoose = require("mongoose");
 const path = require("path");
 const { title } = require("process");
 const Place = require('./models/place');
+const methodOverride = require("method-override");
 
 // Middleware untuk parsing body request
 app.use(express.urlencoded({ extended: true })); // Untuk parsing form data
 app.use(express.json()); // Untuk parsing JSON data
+app.use(methodOverride("_method"));
 
 // const dotenv = require("dotenv");
 // const authRoute = require("./routes/auth");
@@ -64,7 +66,6 @@ app.post("/places", async (req, res) => {
     }
 });
 
-
 app.get("/places/:id", async (req, res) => {
     try {
         const place = await Place.findById(req.params.id); // Menggunakan findById untuk mendapatkan tempat berdasarkan ID
@@ -75,6 +76,37 @@ app.get("/places/:id", async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500).send("Error retrieving place"); // Menangani kesalahan saat mengambil tempat
+    }
+});
+
+app.get("/places/:id/edit", async (req, res) => {
+    try {
+        const place = await Place.findById(req.params.id); // Menggunakan findById untuk mendapatkan tempat berdasarkan ID
+        if (!place) {
+            return res.status(404).send("Place not found"); // Menangani jika tempat tidak ditemukan
+        }
+        res.render("places/edit", { place: place });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Error retrieving place"); // Menangani kesalahan saat mengambil tempat
+    }
+});
+
+app.put("/places/:id", async (req, res) => {
+    try {
+        const place = await Place.findById(req.params.id);
+        if (!place) {
+            return res.status(404).send("Place not found");
+        }
+        place.title = req.body.title;
+        place.price = req.body.price;
+        place.description = req.body.description;
+        place.location = req.body.location;
+        await place.save();
+        res.redirect(`/places/${place._id}`);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Error updating place");
     }
 });
 
