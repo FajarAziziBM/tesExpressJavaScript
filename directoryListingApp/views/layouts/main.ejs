@@ -10,41 +10,26 @@
 </head>
 
 <body>
-    <div class="container-fluid">
+
+    <main class="container">
+
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <%- include('partials/navbar') %>
             <div class="container-fluid">
-                <a class="navbar-brand" href="/">BestPoint</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="/">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/places">Places</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/places/create">New Places</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
 
-        <!-- Main Content -->
-        <div class="container">
-            <%- body %>
-        </div>
+                <!-- Main Content -->
+                <%- body %>
 
-        <!-- Footer -->
-        <footer class="footer mt-auto py-3 bg-light">
-            <div class="container text-center">
-                <span class="text-muted">&copy; 2024 BestPoint. All rights reserved.</span>
+
             </div>
-        </footer>
+
+            <!-- Footer -->
+            <%- include('partials/footer') %>
+
+    </main>
+
+
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
