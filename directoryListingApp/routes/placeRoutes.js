@@ -9,5 +9,6 @@ router.get('/:id', placeController.getPlace);
 router.get('/:id/edit', placeController.getEditPlaceForm);
 router.put('/:id', placeController.updatePlace);
 router.delete('/:id', placeController.deletePlace);
+router.post('/:id/reviews', placeController.createReview);
 
 module.exports = router;

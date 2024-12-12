@@ -1,12 +1,42 @@
 const mongoose = require('mongoose');
+const axios = require('axios');
 const Place = require('../models/place');
 const hereMaps = require('../utils/hereMaps');
+
+// Konfigurasi Pexels API
+const PEXELS_API_KEY = 'g5jLYFGjo0bnR0WH1lXAEctsKK18GrwWhaAtq30nyCQo2H6cLFRDbFhJ';
+const PEXELS_API_URL = 'https://api.pexels.com/v1/search';
 
 mongoose.connect("mongodb://localhost:27017/directorylistingapp")
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.log(err));
 
-function generateRandomPlace(index) {
+async function fetchPexelsImages(query = 'travel landscape', count = 100) {
+    try {
+        const response = await axios.get(PEXELS_API_URL, {
+            headers: {
+                'Authorization': PEXELS_API_KEY
+            },
+            params: {
+                query: query,
+                per_page: count,
+                page: 1
+            }
+        });
+
+        return response.data.photos.map(photo => ({
+            url: photo.src.large2x,
+            thumbnail: photo.src.medium,
+            photographer: photo.photographer,
+            description: photo.alt || 'Travel Landscape'
+        }));
+    } catch (error) {
+        console.error('Error fetching Pexels images:', error);
+        return [];
+    }
+}
+
+function generateRandomPlace(index, images) {
     const titles = [
         'Taman Mini Indonesia Indah', 'Pantai Kuta', 'Borobudur', 'Kawah Putih',
         'Malioboro', 'Pantai Tanjung Aan', 'Bukit Bintang', 'Candi Prambanan',
@@ -25,16 +55,27 @@ function generateRandomPlace(index) {
 
     const randomTitle = titles[Math.floor(Math.random() * titles.length)];
     const randomDescription = descriptions[Math.floor(Math.random() * descriptions.length)];
-    const randomPrice = Math.floor(Math.random() * 1000000).toString(); // Convert to string
+
+    // Perbaikan: Gunakan Number() atau langsung gunakan bilangan bulat
+    const randomPrice = Math.floor(Math.random() * 1000000);
+
     const randomLocation = `${randomTitle}, Indonesia`;
-    const randomImage = 'https://source.unsplash.com/collection/2349781/1280x720';
+
+    // Pilih gambar dari daftar gambar Pexels
+    const imageData = images[index % images.length] || {
+        url: 'https://via.placeholder.com/1280x720',
+        description: randomTitle,
+        photographer: 'Unknown'
+    };
 
     return {
         title: randomTitle,
         price: randomPrice,
         description: randomDescription,
         location: randomLocation,
-        image: randomImage
+        image: imageData.url,
+        imageDescription: imageData.description,
+        photographer: imageData.photographer
     };
 }
 
@@ -43,13 +84,16 @@ async function seedPlaces() {
         // Hapus data lama terlebih dahulu
         await Place.deleteMany({});
 
+        // Ambil gambar dari Pexels
+        const pexelsImages = await fetchPexelsImages('travel landscape', 100);
+
         // Buat array untuk menyimpan tempat
         const placesToSave = [];
 
         // Loop untuk membuat tempat
         for (let i = 0; i < 100; i++) {
             // Buat tempat acak
-            const place = generateRandomPlace(i);
+            const place = generateRandomPlace(i, pexelsImages);
 
             try {
                 // Coba dapatkan data geometri
@@ -74,8 +118,10 @@ async function seedPlaces() {
                     author: '643d36579773b789e91ef660', // ID author default
 
                     images: {
-                        url: place.image || 'default-image-url.jpg',
-                        filename: `image-${Date.now()}-${i}.jpg`
+                        url: place.image || 'https://via.placeholder.com/1280x720',
+                        filename: `image-${Date.now()}-${i}.jpg`,
+                        description: place.imageDescription,
+                        photographer: place.photographer
                     },
 
                     geometry: {

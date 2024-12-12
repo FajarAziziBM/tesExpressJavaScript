@@ -1,0 +1,33 @@
+<% layout('layouts/main') %>
+    <div class="container mt-5">
+        <div class="error-container text-center">
+            <h1 class="display-1 text-danger">
+                <%= error.statusCode || 500 %>
+            </h1>
+
+            <h2 class="mb-4">
+                <%= error.status || 'Error' %>
+            </h2>
+
+            <div class="alert alert-danger">
+                <p class="lead">
+                    <%= error.message %>
+                </p>
+            </div>
+
+            <% if (error.details && process.env.NODE_ENV==='development' ) { %>
+                <div class="error-details mt-4">
+                    <h3>Detail Error:</h3>
+                    <pre class="text-start bg-light p-3">
+                    <%= error.details %>
+                </pre>
+                </div>
+                <% } %>
+
+                    <div class="mt-4">
+                        <a href="/" class="btn btn-primary">
+                            Kembali ke Beranda
+                        </a>
+                    </div>
+        </div>
+    </div>

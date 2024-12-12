@@ -8,7 +8,7 @@ const placeSchema = new Schema({
         trim: true
     },
     price: {
-        type: String,
+        type: Number,
         required: true
     },
     description: {
@@ -42,9 +42,12 @@ const placeSchema = new Schema({
             type: [Number],
             required: true
         }
-    }
-}, {
-    timestamps: true
-});
+    },
+    reviews: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review'
+    }]
+},
+);
 
 module.exports = mongoose.model("Place", placeSchema);

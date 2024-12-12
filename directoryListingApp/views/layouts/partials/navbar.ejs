@@ -1,24 +1,43 @@
 <div class="sticky-top">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">BestPoint</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="bi bi-geo-alt-fill me-2"></i>BestPoint
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/">Home</a>
+                        <a class="nav-link <%= currentPage === 'home' ? 'active' : '' %>" href="/">
+                            <i class="bi bi-house-fill me-1"></i>Home
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/places">Places</a>
+                        <a class="nav-link <%= currentPage === 'places' ? 'active' : '' %>" href="/places">
+                            <i class="bi bi-map-fill me-1"></i>Places
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/places/create">New Places</a>
+                        <a class="nav-link <%= currentPage === 'create' ? 'active' : '' %>" href="/places/create">
+                            <i class="bi bi-plus-circle-fill me-1"></i>New Places
+                        </a>
                     </li>
                 </ul>
+
             </div>
         </div>
     </nav>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Aktifkan tooltips Bootstrap
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    });
+</script>

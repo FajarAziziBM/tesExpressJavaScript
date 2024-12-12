@@ -1,0 +1,177 @@
+<% layout('layouts/main') %>
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Kolom untuk Detail Tempat -->
+            <div class="col-md-6">
+                <div class="card shadow-lg">
+                    <!-- Gambar Tempat -->
+                    <% if (place.images && place.images.url) { %>
+                        <img src="<%= place.images.url %>" class="card-img-top img-fluid" alt="<%= place.title %>"
+                            style="max-height: 400px; object-fit: cover;">
+                        <% } else { %>
+                            <div class="bg-light d-flex justify-content-center align-items-center"
+                                style="height: 300px;">
+                                <i class="bi bi-image text-muted" style="font-size: 5rem;"></i>
+                            </div>
+                            <% } %>
+
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h1 class="card-title mb-0">
+                                            <%= place.title %>
+                                        </h1>
+                                        <span class="badge bg-primary fs-6">
+                                            <i class="bi bi-geo-alt me-2"></i>
+                                            <%= place.location %>
+                                        </span>
+                                    </div>
+
+                                    <div class="card-text mb-4">
+                                        <h4 class="text-muted mb-3">Deskripsi</h4>
+                                        <p class="lead">
+                                            <%= place.description %>
+                                        </p>
+                                    </div>
+
+                                    <div class="card-text mb-4">
+                                        <h4 class="text-muted mb-3">Informasi Harga</h4>
+                                        <div class="alert alert-info" role="alert">
+                                            <i class="bi bi-cash-coin me-2"></i>
+                                            Harga: Rp <%= place.price.toLocaleString('id-ID') %>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between">
+                                        <div class="btn-group" role="group" aria-label="Place Actions">
+                                            <a href="/places/<%= place._id %>/edit" class="btn btn-warning">
+                                                <i class="bi bi-pencil-square me-2"></i>Edit
+                                            </a>
+                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal">
+                                                <i class="bi bi-trash me-2"></i>Hapus
+                                            </button>
+                                        </div>
+                                        <a href="/places" class="btn btn-secondary">
+                                            <i class="bi bi-list-ul me-2"></i>Daftar Tempat
+                                        </a>
+                                    </div>
+                                </div>
+                </div>
+
+                <!-- Modal Konfirmasi Hapus -->
+                <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title" id="deleteModalLabel">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>Konfirmasi Hapus
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Apakah Anda yakin ingin menghapus tempat "<strong>
+                                    <%= place.title %>
+                                </strong>"?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    <i class="bi bi-x-circle me-2"></i>Batal
+                                </button>
+                                <form action="/places/<%= place._id %>?_method=DELETE" method="POST">
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-trash me-2"></i>Hapus
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kolom untuk Ulasan -->
+            <div class="col-md-6">
+                <h3 class="mb-4">Tinggalkan Ulasan</h3>
+                <form action="/places/<%= place._id %>/reviews" method="POST">
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">Rating</label>
+                        <input type="range" name="review[rating]" id="rating" min="1" max="5" step="1"
+                            class="form-range">
+                        <div class="rating-labels d-flex justify-content-between mt-2">
+                            <span>1</span>
+                            <span>2</span>
+                            <span>3</span>
+                            <span>4</span>
+                            <span>5</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="body" class="form-label">Ulasan</label>
+                        <textarea name="review[body]" id="body" cols="30" rows="5" class="form-control"
+                            placeholder="Tulis ulasan Anda di sini..." required></textarea>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-2"></i>Kirim Ulasan
+                        </button>
+                    </div>
+                </form>
+
+                <% if (place.reviews && place.reviews.length> 0) { %>
+                    <div class="reviews-section mt-5">
+                        <h4 class="mb-4">Ulasan Sebelumnya</h4>
+                        <% place.reviews.forEach(function(review) { %>
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <!-- Menampilkan Rating dengan Bintang -->
+                                    <div class="d-flex mb-2">
+                                        <% for (let i=0; i < 5; i++) { %>
+                                            <i
+                                                class="bi bi-star-fill <%= i < review.rating ? 'text-warning' : 'text-muted' %>"></i>
+                                            <% } %>
+                                    </div>
+                                    <!-- Menampilkan Body Review -->
+                                    <p class="card-text">
+                                        <%= review.body %>
+                                    </p>
+                                    <!-- Menampilkan Rating Numerik -->
+                                    <p class="card-text text-muted">Rating: <%= review.rating %>
+                                    </p>
+                                </div>
+                            </div>
+                            <% }); %>
+                    </div>
+                    <% } else { %>
+                        <p>Tidak ada ulasan untuk tempat ini.</p>
+                        <% } %>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Konfirmasi sebelum menghapus
+            const deleteForm = document.querySelector('#deleteModal form');
+            deleteForm.addEventListener('submit', function (event) {
+                const confirmation = confirm('Apakah Anda yakin ingin menghapus tempat ini?');
+                if (!confirmation) {
+                    event.preventDefault();
+                }
+            });
+
+            // Tambahkan interaktivitas untuk rating
+            const ratingInput = document.getElementById('rating');
+            const ratingLabels = document.querySelectorAll('.rating-labels span');
+
+            ratingInput.addEventListener('input', function () {
+                ratingLabels.forEach((label, index) => {
+                    if (index < ratingInput.value) {
+                        label.classList.add('text-primary');
+                    } else {
+                        label.classList.remove('text-primary');
+                    }
+                });
+            });
+        });
+    </script>

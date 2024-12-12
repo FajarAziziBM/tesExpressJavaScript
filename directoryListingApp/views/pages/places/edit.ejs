@@ -1,0 +1,137 @@
+<% layout('layouts/main') %>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-warning text-dark">
+                        <h2 class="mb-0">
+                            <i class="bi bi-pencil-square me-2"></i>Edit Tempat
+                        </h2>
+                    </div>
+
+                    <div class="card-body">
+                        <form action="/places/<%= place._id %>?_method=PUT" method="POST" class="validated-form"
+                            novalidate>
+                            <div class="row g-3">
+                                <!-- Title Input -->
+                                <div class="col-md-6">
+                                    <label for="title" class="form-label">Judul Tempat</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                        <input type="text" class="form-control" id="title" name="title"
+                                            value="<%= place.title %>" required>
+                                        <div class="invalid-feedback">
+                                            Judul tempat harus diisi.
+                                        </div>
+                                        <div class="valid-feedback">
+                                            Judul tempat valid.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Price Input -->
+                                <div class="col-md-6">
+                                    <label for="price" class="form-label">Harga</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Rp</span>
+                                        <input type="number" class="form-control" id="price" name="price"
+                                            value="<%= place.price %>" required>
+                                        <div class="invalid-feedback">
+                                            Harga harus diisi dengan angka.
+                                        </div>
+                                        <div class="valid-feedback">
+                                            Harga valid.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Description Input -->
+                                <div class="col-12">
+                                    <label for="description" class="form-label">Deskripsi</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-text-paragraph"></i></span>
+                                        <textarea class="form-control" id="description" name="description" rows="3"
+                                            required><%= place.description %></textarea>
+                                        <div class="invalid-feedback">
+                                            Deskripsi harus diisi.
+                                        </div>
+                                        <div class="valid-feedback">
+                                            Deskripsi valid.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Location Input -->
+                                <div class="col-12">
+                                    <label for="location" class="form-label">Lokasi</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-map"></i></span>
+                                        <input type="text" class="form-control" id="location" name="location"
+                                            value="<%= place.location %>" required>
+                                        <div class="invalid-feedback">
+                                            Lokasi harus diisi.
+                                        </div>
+                                        <div class="valid-feedback">
+                                            Lokasi valid.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Image URL Input -->
+                                <div class="col-12">
+                                    <label for="image" class="form-label">URL Gambar</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-image"></i></span>
+                                        <input type="url" class="form-control" id="image" name="image"
+                                            value="<%= place.images ? place.images.url : '' %>"
+                                            placeholder="https://example.com/gambar.jpg">
+                                        <div class="invalid-feedback">
+                                            Masukkan URL gambar yang valid.
+                                        </div>
+                                        <div class="valid-feedback">
+                                            URL gambar valid.
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        Opsional: Masukkan URL gambar untuk tempat ini
+                                    </small>
+                                </div>
+
+                                <!-- Buttons: Cancel and Save -->
+                                <div class="col-12 d-flex justify-content-between">
+                                    <a href="/places/<%= place._id %>" class="btn btn-secondary">
+                                        <i class="bi bi-arrow-left me-2"></i>Kembali
+                                    </a>
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="bi bi-save me-2"></i>Perbarui Tempat
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (() => {
+            'use strict';
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            const forms = document.querySelectorAll('.validated-form');
+
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>

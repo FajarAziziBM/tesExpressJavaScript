@@ -1,0 +1,29 @@
+<% layout('layouts/main') %>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card border-danger">
+                    <div class="card-header bg-danger text-white">
+                        <h3 class="mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Terjadi Kesalahan
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title text-danger">
+                            <%= error && error.message ? error.message : 'Kesalahan Tidak Diketahui' %>
+                        </h4>
+                        <% if (error && error.details) { %>
+                            <p class="card-text text-muted">
+                                <%= error.details %>
+                            </p>
+                            <% } %>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/places" class="btn btn-primary">
+                            <i class="bi bi-arrow-left me-2"></i>Kembali ke Daftar Tempat
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

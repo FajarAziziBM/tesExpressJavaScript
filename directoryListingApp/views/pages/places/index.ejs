@@ -1,0 +1,112 @@
+<% layout('layouts/main') %>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Daftar Tempat</h1>
+        <a href="/places/create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Tambah Tempat Baru
+        </a>
+    </div>
+
+    <% 
+    // Definisikan variabel dengan aman di awal
+    const safeCurrentPage = typeof currentPage === 'number' ? currentPage : 1;
+    const safeTotalPages = typeof totalPages === 'number' ? totalPages : 0;
+    %>
+
+    <% if (typeof places !== 'undefined' && places.length > 0) { %>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <% places.forEach((place) => { %>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <% 
+                        const imageUrl = place.images && place.images.url 
+                            ? place.images.url 
+                            : 'https://via.placeholder.com/350x250';
+                        const imageAlt = place.images && place.images.description 
+                            ? place.images.description 
+                            : place.title;
+                        %>
+                        <img 
+                            src="<%= imageUrl %>" 
+                            class="card-img-top" 
+                            alt="<%= imageAlt %>"
+                            style="height: 250px; object-fit: cover;"
+                            onerror="this.src='https://via.placeholder.com/350x250'; this.alt='Gambar tidak tersedia';"
+                        >
+
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="/places/<%= place._id %>" class="text-decoration-none text-dark">
+                                    <%= place.title %>
+                                </a>
+                            </h5>
+                            <p class="card-text text-muted">
+                                <%= place.description.length > 100 
+                                    ? place.description.substring(0, 100) + '...' 
+                                    : place.description 
+                                %>
+                            </p>
+                        </div>
+
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small class="text-muted">
+                                        <i class="bi bi-geo-alt me-1"></i>
+                                        <%= place.location || 'Lokasi tidak diketahui' %>
+                                    </small>
+                                </div>
+                                <div>
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-currency-dollar me-1"></i>
+                                        <%= place.price ? place.price.toLocaleString('id-ID') : '0' %>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } else { %>
+        <div class="alert alert-info text-center mt-4" role="alert">
+            <i class="bi bi-info-circle me-2"></i>
+            Belum ada tempat yang tersedia.
+            <a href="/places/create" class="alert-link">Tambahkan tempat pertama</a>
+        </div>
+    <% } %>
+
+    <% if (safeTotalPages > 1) { %>
+        <nav aria-label="Halaman tempat" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <% for(let i = 1; i <= safeTotalPages; i++) { %>
+                    <li class="page-item <%= safeCurrentPage === i ? 'active' : '' %>">
+                        <a class="page-link" href="/places?page=<%= i %>">
+                            <%= i %>
+                        </a>
+                    </li>
+                <% } %>
+            </ul>
+        </nav>
+    <% } %>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Tambahan fitur interaktif
+    const cards = document.querySelectorAll('.card');
+    
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.classList.add('shadow-lg');
+            this.style.transform = 'scale(1.03)';
+            this.style.transition = 'transform 0.3s ease';
+        });
+
+        card.addEventListener('mouseleave', function() {
+            this.classList.remove('shadow-lg');
+            this.style.transform = 'scale(1)';
+        });
+    });
+});
+</script>
