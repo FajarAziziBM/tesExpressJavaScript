@@ -24,16 +24,13 @@ class Application {
     }
 
     initializeConfiguration() {
-        // EJS Configuration - Gabungkan metode konfigurasi
         this.app.engine('ejs', ejsMate);
         this.app.set('view engine', 'ejs');
         this.app.set('views', path.join(__dirname, 'views'));
     }
 
     initializeDatabase() {
-        mongoose.connect(process.env.MONGODB_URI, {
-
-        })
+        mongoose.connect(process.env.MONGODB_URI)
             .then(() => console.log('✅ Database Connected Successfully'))
             .catch((error) => {
                 console.error('❌ Database Connection Error:', error);
@@ -42,16 +39,13 @@ class Application {
     }
 
     initializeMiddleware() {
-        // Middleware standar
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(express.json());
         this.app.use(methodOverride('_method'));
         this.app.use(express.static(path.join(__dirname, 'public')));
 
-        // Session middleware
         this.app.use(this.configureSession());
 
-        // Variabel global
         this.app.use((req, res, next) => {
             res.locals.title = 'BestPoint';
             res.locals.currentPage = req.path.split('/')[1] || 'home';
@@ -71,27 +65,20 @@ class Application {
                 autoRemoveInterval: 10
             }),
             cookie: {
-                maxAge: 1000 * 60 * 60 * 24, // 24 hours
+                maxAge: 1000 * 60 * 60 * 24,
                 secure: process.env.NODE_ENV === 'production'
             }
         });
     }
 
     initializeRoutes() {
-        // Home Route
-        this.app.get("/", this.homeRouteHandler);
-
-        // Place Routes
+        this.app.get("/", this.homeRouteHandler.bind(this));
         this.app.use("/places", placeRoutes);
-
-        // 404 Handler
-        this.app.use(this.notFoundHandler);
+        this.app.use(this.notFoundHandler.bind(this));
     }
 
     homeRouteHandler(req, res) {
-        res.render("home", {
-            title: "Home Page"
-        });
+        res.render("home", { title: "Home Page" });
     }
 
     notFoundHandler(req, res) {
@@ -101,7 +88,6 @@ class Application {
     }
 
     initializeErrorHandling() {
-        // Global error handler middleware
         this.app.use((err, req, res, next) => {
             const statusCode = err.statusCode || 500;
             const status = err.status || 'error';
@@ -116,7 +102,7 @@ class Application {
                 }
             });
         });
-    }   
+    }
 
     start() {
         const PORT = process.env.PORT || serverConfig.defaultPort;
@@ -125,7 +111,6 @@ class Application {
             console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
         });
 
-        // Graceful Shutdown
         process.on('SIGTERM', () => {
             console.log('SIGTERM signal received: closing HTTP server');
             server.close(() => {
@@ -149,8 +134,7 @@ class ApplicationSingleton {
     }
 }
 
-// Run Application
 const app = ApplicationSingleton.getInstance();
 app.start();
 
-module.exports = app; // Tambahkan export untuk testing
+module.exports = app;

@@ -2,6 +2,8 @@ const Place = require('../models/place');
 const Review = require('../models/review');
 const axios = require('axios');
 const warpAsync = require('../utils/warpAsync');
+const mongoose = require('mongoose');
+const ExpressError = require('../utils/ErrorHandler');
 
 
 // Validasi input untuk tempat
@@ -95,10 +97,22 @@ exports.createPlace = warpAsync(async (req, res) => {
 });
 
 exports.getPlace = warpAsync(async (req, res) => {
-    const place = await Place.findById(req.params.id).populate('reviews');
+    const { id } = req.params;
+
+    // Validasi ID
+    if (!mongoose.isValidObjectId(id)) {
+        return res.status(400).render('pages/places/error', {
+            error: {
+                message: 'ID tidak valid',
+                details: 'Format ID tidak sesuai'
+            }
+        });
+    }
+
+    const place = await Place.findById(id).populate('reviews');
 
     if (!place) {
-        return res.status(404).render('places/error', {
+        return res.status(404).render('pages/places/error', {
             error: {
                 message: 'Tempat tidak ditemukan',
                 details: 'ID tempat tidak valid'
@@ -191,6 +205,11 @@ exports.deletePlace = warpAsync(async (req, res) => {
 });
 
 exports.createReview = warpAsync(async (req, res) => {
+    const createReview = async (req, res, next) => {
+        console.log('Received review body:', req.body); // ✅ This is the correct place
+        // rest of your logic...
+      };
+      
     try {
         const place = await Place.findById(req.params.id);
 
