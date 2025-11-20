@@ -189,27 +189,27 @@ exports.updatePlace = warpAsync(async (req, res) => {
     res.redirect(`/places/${place._id}`);
 });
 
-exports.deletePlace = warpAsync(async (req, res) => {
-    const place = await Place.findByIdAndDelete(req.params.id);
+exports.deletePlace = async (req, res, next) => {
+    try {
+        const { id } = req.params;
 
-    if (!place) {
-        return res.status(404).render('pages/places/error', {
-            error: {
-                message: 'Tempat tidak ditemukan',
-                details: 'ID tempat tidak valid'
-            }
-        });
+        // Hapus Place → trigger hook post('findOneAndDelete') untuk review
+        const place = await Place.findByIdAndDelete(id);
+        if (!place) return res.status(404).send("Place not found");
+
+        // Semua review terkait sudah otomatis terhapus oleh hook
+        res.redirect('/places');
+    } catch (err) {
+        next(err);
     }
-
-    res.redirect('/places');
-});
+};
 
 exports.createReview = warpAsync(async (req, res) => {
     const createReview = async (req, res, next) => {
         console.log('Received review body:', req.body); // ✅ This is the correct place
         // rest of your logic...
-      };
-      
+    };
+
     try {
         const place = await Place.findById(req.params.id);
 
@@ -273,3 +273,31 @@ function validateReviewInput(reviewData) {
 
     return { isValid, errors };
 }
+
+exports.deleteReview = async (req, res, next) => {
+    try {
+        const { id: placeId, reviewId } = req.params;
+
+        // Pastikan Place & Review ada (jalankan paralel)
+        const [place, review] = await Promise.all([
+            Place.findById(placeId),
+            Review.findById(reviewId)
+        ]);
+
+        if (!place) return res.status(404).send("Place not found");
+        if (!review) return res.status(404).send("Review not found");
+
+        // Hapus review dari place dan hapus dokumen review secara paralel
+        await Promise.all([
+            Place.findByIdAndUpdate(placeId, {
+                $pull: { reviews: reviewId }
+            }),
+
+            Review.findByIdAndDelete(reviewId)
+        ]);
+
+        res.redirect(`/places/${placeId}`);
+    } catch (err) {
+        next(err);
+    }
+};

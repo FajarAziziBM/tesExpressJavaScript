@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const methodOverride = require('method-override');
+// app.use(methodOverride('_method'));
 const ejsMate = require('ejs-mate');
 
 // Configuration Imports
