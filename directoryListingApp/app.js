@@ -5,14 +5,14 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const methodOverride = require('method-override');
-// app.use(methodOverride('_method'));
 const ejsMate = require('ejs-mate');
 
-// Configuration Imports
+// Config
 const serverConfig = require('./config/server');
 
-// Route Imports
+// Routes
 const placeRoutes = require('./routes/placeRoutes');
+const reviewRoutes = require('./routes/reviewRoutes'); 
 
 class Application {
     constructor() {
@@ -47,6 +47,7 @@ class Application {
 
         this.app.use(this.configureSession());
 
+        // GLOBAL locals
         this.app.use((req, res, next) => {
             res.locals.title = 'BestPoint';
             res.locals.currentPage = req.path.split('/')[1] || 'home';
@@ -72,9 +73,17 @@ class Application {
         });
     }
 
+    //  ROUTING
     initializeRoutes() {
         this.app.get("/", this.homeRouteHandler.bind(this));
+
+        // Semua endpoint /places
         this.app.use("/places", placeRoutes);
+
+        // Semua endpoint /places/:id/reviews
+        this.app.use("/places/:id/reviews", reviewRoutes); 
+
+        // Handler 404
         this.app.use(this.notFoundHandler.bind(this));
     }
 
